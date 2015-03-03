@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
-import sample.data.jpa.domain.Transaction;
-import sample.data.jpa.domain.Card;
 import sample.data.jpa.domain.Account;
+import sample.data.jpa.domain.Card;
 import sample.data.jpa.domain.Order;
-import sample.data.jpa.service.TransactionService;
+import sample.data.jpa.domain.Transaction;
 import sample.data.jpa.service.AccountRepository;
+import sample.data.jpa.service.TransactionService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -60,7 +60,7 @@ public class SampleController {
     }
 
     @RequestMapping(value = "/order/add", method = RequestMethod.POST)
-    public String addWo(@RequestBody Order order) {
+    public String addOrder(@RequestBody Order order) {
         Order result = transactionService.saveOrder(order);
         if (result.getId() > 0) {
             return "SUCCESS";
@@ -70,7 +70,7 @@ public class SampleController {
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.GET)
-    public List<Order> getWos() {
+    public List<Order> getOrders() {
         return transactionService.getOrders();
     }
 
