@@ -15,7 +15,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 }
 ```
 #Testing
-Concurrent access is tested with JMeter (http://jmeter.apache.org/) src/main/resources/StressTest.jmx. NB: Extra libs http://jmeter-plugins.org/downloads/file/JMeterPlugins-ExtrasLibs-1.2.0.zip should installed to JMeter home due to usage of http://jmeter-plugins.org/wiki/JSONPathExtractor/. With these specific settings on an average laptop you can get around 10% of errors for TxEnd request:
+Concurrent access is tested with JMeter (http://jmeter.apache.org/) src/main/resources/StressTest.jmx. NB: Extra libs http://jmeter-plugins.org/downloads/file/JMeterPlugins-ExtrasLibs-1.2.0.zip have to be installed to JMeter home to run the script due to usage of http://jmeter-plugins.org/wiki/JSONPathExtractor/. With these specific settings on an average laptop you can get around 10% of errors for TxEnd request:
 ```
 {
   "timestamp": 1425407408204,
