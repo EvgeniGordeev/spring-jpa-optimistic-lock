@@ -3,6 +3,7 @@ This sample illustrates the issue when many concurrent transactions are modifiyi
 - client requests '/order/{hashId}' for first available Order by given card hash id
 - client starts new tx for given order - '/tx/{orderId}/start'
 - client completes tx - '/tx/{txId}/stop/{amount}' where the tx amount is subtracted from Account balance.
+
 # Entity Locking
 Account and Order entities are versioned with @javax.persistence.Version. In last step  Account entity is locked with pessimistic write lock:
 ```
