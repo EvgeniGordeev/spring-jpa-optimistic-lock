@@ -18,7 +18,7 @@ class JpaTransactionRepository implements TransactionRepository {
 
     @Override
     public List<Transaction> findAll() {
-        return this.entityManager.createQuery("SELECT n FROM Dispense n", Transaction.class).getResultList();
+        return this.entityManager.createQuery("SELECT n FROM Transaction n", Transaction.class).getResultList();
     }
 
     @Override
