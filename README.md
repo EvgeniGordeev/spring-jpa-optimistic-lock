@@ -1,10 +1,10 @@
 # Scenario
-This sample illustrates the issue when many concurrent transactions are modifiying Account balance. Account can have many Card entities bound. Transactions are related to Order and last in time. Each Thread executes as follows:
-1) client requests '/order/{hashId}' for first available Order by given card hash id
-2) client starts new tx for given order - '/tx/{orderId}/start'
-3) client completes tx - '/tx/{txId}/stop/{amount}' where the tx amount is subtracted from Account balance.
+This sample illustrates the issue when many concurrent transactions are modifiying Account balance. Account can have many Card entities bound. Transactions are related to Order and last in time. Each Thread executes as follows:  
+- client requests '/order/{hashId}' for first available Order by given card hash id
+- client starts new tx for given order - '/tx/{orderId}/start'
+- client completes tx - '/tx/{txId}/stop/{amount}' where the tx amount is subtracted from Account balance.
 # Entity Locking
-Account and Order entities are versioned with @javax.persistence.Version. On 3) step Account entity is locked with pessimistic write lock:
+Account and Order entities are versioned with @javax.persistence.Version. In last step  Account entity is locked with pessimistic write lock:
 ```
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
