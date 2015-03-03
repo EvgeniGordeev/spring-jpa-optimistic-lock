@@ -42,20 +42,20 @@ public class SampleController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @RequestMapping(value = "/order/{deviceId}", method = RequestMethod.GET)
-    public Order wo(@PathVariable String deviceId) {
-        return transactionService.getOrderByHashId(deviceId);
+    @RequestMapping(value = "/order/{hashId}", method = RequestMethod.GET)
+    public Order getFirstAvailableOrder(@PathVariable String hashId) {
+        return transactionService.getOrderByHashId(hashId);
     }
 
     @JsonView(View.Summary.class)
-    @RequestMapping(value = "/tx/{woId}/start", method = RequestMethod.POST)
-    public Transaction start(@PathVariable Integer woId) {
-        return transactionService.startTx(woId);
+    @RequestMapping(value = "/tx/{orderId}/start", method = RequestMethod.POST)
+    public Transaction startTx(@PathVariable Integer orderId) {
+        return transactionService.startTx(orderId);
     }
 
     @JsonView(View.Summary.class)
     @RequestMapping(value = "/tx/{txId}/stop/{amount}", method = RequestMethod.POST)
-    public Transaction stop(@PathVariable Long txId, @PathVariable BigDecimal amount) {
+    public Transaction stopTx(@PathVariable Long txId, @PathVariable BigDecimal amount) {
         return transactionService.stopTx(txId, amount);
     }
 

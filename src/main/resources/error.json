@@ -1,0 +1,8 @@
+{
+  "timestamp": 1425407408204,
+  "status": 500,
+  "error": "Internal Server Error",
+  "exception": "org.springframework.orm.ObjectOptimisticLockingFailureException",
+  "message": "Object of class [sample.data.jpa.domain.Account] with identifier [1]: optimistic locking failed; nested exception is org.hibernate.StaleObjectStateException: Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [sample.data.jpa.domain.Account#1]",
+  "path": "/tx/1443/stop/46.4"
+}

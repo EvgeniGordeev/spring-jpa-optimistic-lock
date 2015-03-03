@@ -54,8 +54,11 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionRepository.findById(dispenseId);
         transaction.setEndTimestamp(new Date());
         transaction.setTxAmount(txAmount);
+
         Card card = transactionRepository.findCardByHashId(transaction.getDeviceId());
+        // load account and acquiring pessimistic lock
         Account account = accountRepository.findOne(card.getAccount().getId());
+        //substract tx amount from account balance
         BigDecimal currentVol = account.getCurrentVolume();
         account.setCurrentVolume(currentVol.subtract(txAmount));
         account.setCurrentVolumeTimestamp(transaction.getEndTimestamp());
