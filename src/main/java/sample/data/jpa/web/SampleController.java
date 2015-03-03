@@ -27,7 +27,6 @@ import sample.data.jpa.domain.Account;
 import sample.data.jpa.domain.Card;
 import sample.data.jpa.domain.Order;
 import sample.data.jpa.domain.Transaction;
-import sample.data.jpa.service.AccountRepository;
 import sample.data.jpa.service.TransactionService;
 
 import java.math.BigDecimal;
@@ -38,9 +37,6 @@ public class SampleController {
 
     @Autowired
     private TransactionService transactionService;
-
-    @Autowired
-    private AccountRepository accountRepository;
 
     @RequestMapping(value = "/order/{hashId}", method = RequestMethod.GET)
     public Order getFirstAvailableOrder(@PathVariable String hashId) {
@@ -86,8 +82,8 @@ public class SampleController {
     }
 
     @RequestMapping(value = "/account/{id}", method = RequestMethod.GET)
-    public Account tank(@PathVariable Integer id) {
-        return accountRepository.findOne(id);
+    public Account getAccount(@PathVariable Integer id) {
+        return transactionService.load(id);
     }
 
 

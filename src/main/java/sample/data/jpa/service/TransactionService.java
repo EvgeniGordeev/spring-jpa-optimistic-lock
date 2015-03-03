@@ -1,5 +1,6 @@
 package sample.data.jpa.service;
 
+import sample.data.jpa.domain.Account;
 import sample.data.jpa.domain.Transaction;
 import sample.data.jpa.domain.Card;
 import sample.data.jpa.domain.Order;
@@ -24,5 +25,7 @@ public interface TransactionService {
     Card addOrder(Card card);
 
     List<Order> getOrders();
+
+    Account load(Integer id);
 
 }

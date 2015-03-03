@@ -1,19 +1,18 @@
 package sample.data.jpa.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.stereotype.Repository;
 import sample.data.jpa.domain.Account;
 
-import javax.persistence.LockModeType;
+import java.math.BigDecimal;
 
 /**
- * @author EvgeniGordeev
- * @since 3/2/2015.
+ * @author eg
+ * @version 4.0
+ * @since 2015-03-03
  */
-@Repository
-public interface AccountRepository extends JpaRepository<Account, Integer> {
-    @Override
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+public interface AccountRepository {
     Account findOne(Integer integer);
+
+    Account getLockedAccount(Integer id);
+
+    Account save(Account account);
 }
