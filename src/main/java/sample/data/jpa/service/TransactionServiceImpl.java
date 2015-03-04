@@ -2,6 +2,10 @@ package sample.data.jpa.service;
 
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sample.data.jpa.domain.Account;
@@ -30,6 +34,12 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Autowired
+    private ApplicationContext ac;
+
+    @Autowired
+    private TaskExecutor taskExecutor;
+
     @Override
     public Order getOrderByHashId(String hashId) {
         List<Order> orders = transactionRepository.findOrderByHashId(hashId);
@@ -55,21 +65,17 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction stopTx(Long dispenseId, BigDecimal txAmount) {
-        Transaction transaction = transactionRepository.findOne(dispenseId);
+    public Transaction stopTx(Long dispenseId, final BigDecimal txAmount) {
+        final Transaction transaction = transactionRepository.findOne(dispenseId);
         transaction.setEndTimestamp(new Date());
         transaction.setTxAmount(txAmount);
 
-        Card card = cardRepository.findFirstByHashId(transaction.getDeviceId());
-        // load account and acquiring pessimistic lock
-        Account account = accountRepository.getLockedAccount(card.getAccount().getId());
-        //substract tx amount from account balance
-        BigDecimal currentVol = account.getCurrentVolume();
-        account.setCurrentVolume(currentVol.subtract(txAmount));
-        account.setCurrentVolumeTimestamp(transaction.getEndTimestamp());
+        final Card card = cardRepository.findFirstByHashId(transaction.getDeviceId());
+
+        taskExecutor.execute(ac.getBean(TxTask.class, card.getAccount().getId(), txAmount));
+
         transaction.getOrder().setStatus("COMPLETED");
 
-        accountRepository.save(account);
         orderRepository.save(transaction.getOrder());
         return transactionRepository.save(transaction);
     }
@@ -97,5 +103,32 @@ public class TransactionServiceImpl implements TransactionService {
         return accountRepository.findOne(id);
     }
 
+    interface TxTask extends Runnable{}
+
+    @Transactional
+    @Component
+    @Scope("prototype")
+    static class TxTaskImpl implements TxTask {
+        Integer accountId;
+        BigDecimal txAmount;
+        @Autowired
+        AccountRepository accountRepository;
+
+        @Autowired
+        TxTaskImpl(Integer accountId, BigDecimal txAmount) {
+            this.accountId = accountId;
+            this.txAmount = txAmount;
+        }
+
+        @Override
+        public void run() {
+            Account account = accountRepository.findOne(accountId);
+            //substract tx amount from account balance
+            BigDecimal currentVol = account.getCurrentVolume();
+            account.setCurrentVolume(currentVol.subtract(txAmount));
+            account.setCurrentVolumeTimestamp(new Date());
+            accountRepository.save(account);
+        }
+    }
 
 }

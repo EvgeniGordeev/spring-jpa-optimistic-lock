@@ -1,18 +1,13 @@
 package sample.data.jpa.service;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import sample.data.jpa.domain.Account;
-
-import java.math.BigDecimal;
 
 /**
  * @author eg
  * @version 4.0
  * @since 2015-03-03
  */
-public interface AccountRepository {
-    Account findOne(Integer integer);
-
-    Account getLockedAccount(Integer id);
-
-    Account save(Account account);
-}
+@Repository
+public interface AccountRepository extends JpaRepository<Account, Integer> {}

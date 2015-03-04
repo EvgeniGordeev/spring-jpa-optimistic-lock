@@ -19,9 +19,13 @@ package sample.data.jpa;
 import org.h2.tools.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.sql.SQLException;
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 
 @SpringBootApplication
 public class SampleDataJpaApplication {
@@ -34,6 +38,14 @@ public class SampleDataJpaApplication {
     public void h2TcpConnection() throws SQLException {
         Server webServer = Server.createWebServer("-webPort", "8082", "-tcpAllowOthers").start();
         Server server = Server.createTcpServer("-tcpPort", "9092", "-tcpAllowOthers").start();
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setMaxPoolSize(10);
+        taskExecutor.afterPropertiesSet();
+        return taskExecutor;
     }
 
 }
