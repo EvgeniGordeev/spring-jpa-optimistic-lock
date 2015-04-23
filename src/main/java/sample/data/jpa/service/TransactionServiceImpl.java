@@ -61,8 +61,10 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTxAmount(txAmount);
 
         Card card = cardRepository.findFirstByHashId(transaction.getDeviceId());
+
         // load account and acquiring pessimistic lock
-        Account account = accountRepository.getLockedAccount(card.getAccount().getId());
+        Account account = card.getAccount();
+        accountRepository.refreshWithPessimisticLock(account);
         //substract tx amount from account balance
         BigDecimal currentVol = account.getCurrentVolume();
         account.setCurrentVolume(currentVol.subtract(txAmount));
