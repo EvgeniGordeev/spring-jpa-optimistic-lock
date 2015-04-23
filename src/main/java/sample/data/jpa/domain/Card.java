@@ -2,7 +2,6 @@ package sample.data.jpa.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -24,7 +23,7 @@ public class Card {
     @Column(name = "account_id")
     private Integer accountId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "account_id", insertable = false, updatable = false)
     private Account account;
 

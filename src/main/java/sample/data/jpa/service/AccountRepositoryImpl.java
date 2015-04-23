@@ -1,35 +1,27 @@
 package sample.data.jpa.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import sample.data.jpa.domain.Account;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
 
 /**
- * @author EvgeniGordeev
- * @since 3/2/2015.
+ * Spring data JPA custom repository
+ * http://docs.spring.io/spring-data/data-jpa/docs/current/reference/html/#repositories.custom-implementations
+ *
+ * @author NikolaiSinyakevich
+ * @version 4.0
+ * @since 2015-04-23
  */
-@Repository
-public class AccountRepositoryImpl implements AccountRepository {
-    @Autowired
-    private EntityManager em;
+public class AccountRepositoryImpl implements AccountRepositoryCustom {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public Account findOne(Integer id) {
-        return em.find(Account.class, id);
+    public void refreshWithPessimisticLock(Account account) {
+        entityManager.refresh(account, LockModeType.PESSIMISTIC_WRITE);
     }
 
-    @Override
-    public Account getLockedAccount(Integer id) {
-        final Account account = findOne(id);
-        em.lock(account, LockModeType.PESSIMISTIC_WRITE);
-        return account;
-    }
-
-    @Override
-    public Account save(Account account) {
-        return em.merge(account);
-    }
 }
